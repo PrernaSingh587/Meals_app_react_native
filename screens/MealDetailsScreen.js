@@ -1,26 +1,33 @@
 import { useNavigation } from '@react-navigation/native';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { Text, Image, View, StyleSheet, ScrollView, Button } from 'react-native'
 import IconButton from '../components/IconButton';
 import List from '../components/MealDetail/List';
 import Subtitle from '../components/MealDetail/Subtitle';
 import MealDetails from '../components/MealDetails';
 import { MEALS } from '../data/dummy-data';
+import { FavContext } from '../store/context/fav-context';
 
 function MealDetailsScreen({route, navigation}) {
+    const favMealsCtx = useContext(FavContext);
+
     const mealId = route.params.mealId;
     const meal = MEALS.find(m => m.id === mealId);
-
+    const mealIsFav = favMealsCtx.ids.includes(mealId);
+    
     function headerButtonPressHandler() {
-        console.log("Pressed!");
+        if(mealIsFav) {
+            favMealsCtx.remFav(mealId);
+        } else favMealsCtx.addFav(mealId)
     }
 
+    
     useEffect(() => {
         navigation.setOptions({
             headerRight : () => {
                 return <IconButton title='tap me!' 
                 onPress={headerButtonPressHandler}
-                icon='star'
+                icon={mealIsFav ? 'star' : 'star-outline'}
                 color={'white'}
                 />
             }

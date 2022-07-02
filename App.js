@@ -6,14 +6,42 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import MealsOverViewScreen from './screens/MealsOverViewScreen';
 import { CATEGORIES } from './data/dummy-data';
 import MealDetailsScreen from './screens/MealDetailsScreen';
-
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import FavScreen from './screens/FavScreen';
+import FavContextProvider from './store/context/fav-context';
 
 const Stack = createNativeStackNavigator();
+const Drawer = createDrawerNavigator();
 
 export default function App() {
+
+  function DrawerNavigator() {
+    return <Drawer.Navigator screenOptions={{
+      headerStyle : {
+        backgroundColor : '#351401',
+      },
+      headerTintColor : 'white',
+      screenContainerStyle: {backgroundColor : '#3f2f25'},
+      drawerContentStyle: {backgroundColor: 'brown'},
+      drawerActiveTintColor: 'yellow',
+      drawerInactiveTintColor: 'white',
+      drawerActiveBackgroundColor: 'red'
+     }}>
+      <Drawer.Screen name='Categories'
+      component={CategoriesScreen}
+      options = {{
+        title: 'All Categories',
+      }}/>
+      <Drawer.Screen name='Fav Screen'
+      component={FavScreen}/>
+    </Drawer.Navigator>
+  }
+
+
   return (
      <>
      <StatusBar style='dark'/>
+     <FavContextProvider>
      <NavigationContainer>
        <Stack.Navigator
        screenOptions={{
@@ -24,9 +52,10 @@ export default function App() {
         contentStyle: {backgroundColor : '#3f2f25'}
        }}>
          <Stack.Screen name="MealsCategories" 
-         component = {CategoriesScreen}
+         component = {DrawerNavigator}
          options={{
-           title : 'All Categories',
+           //title : 'All Categories',
+           headerShown: false
           //  headerStyle : {
           //    backgroundColor : '#351401',
           //  },
@@ -53,7 +82,9 @@ export default function App() {
       />
        </Stack.Navigator>
       </NavigationContainer>
+      </FavContextProvider>
       </>
+
     
   );
 }
